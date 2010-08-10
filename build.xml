@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<project name="Library Project SWC and ASDocs builder"
+		 default="compile"
+		 basedir=".">
+
+	<!-- import our build properties file -->
+	<property file="./build.properties"/>
+
+	<!--
+		 Flex Ant Tasks used to perform compc and mxml compiling more info at
+		 http://labs.adobe.com/wiki/index.php/Flex_Ant_Tasks
+	-->
+	<taskdef resource="flexTasks.tasks"
+			 classpath="${basedir}/flexTasks/lib/flexTasks.jar"/>
+
+	<target name="compile"
+			description="series of tasks to create docs and swc">
+
+		<antcall target="cleanDocsDir"
+				 description="Cleanup docs directory"/>
+		<antcall target="createASDocs"
+				 description="build ASdocs"/>
+		<antcall target="buildSWC"
+				 description="build the SWC file"/>
+		<antcall target="copySource"
+				 description="copies the source files to build folder"/>
+
+		<!--
+			 <antcall target="cleanSWCDir" description="Cleanup swc directory" />
+		-->
+
+	</target>
+
+	<!-- Clean doc directory function -->
+	<target name="cleanDocsDir"
+			description="DELETE the existing output folder">
+		<delete dir="${basedir}/${docsoutputfolder}/${project}/"
+				failOnError="true"
+				includeEmptyDirs="true"/>
+		<mkdir dir="${basedir}/${docsoutputfolder}/${project}/"/>
+		<echo message="${project} ASDoc directory cleaned"/>
+	</target>
+
+	<!--
+		 target name="cleanSWCDir" description="DELETE the existing output
+		 folder"> <delete dir="${basedir}/${liboutputfolder}"
+		 failOnError="true" includeEmptyDirs="true"/> <echo message="${project}
+		 SWC directory cleaned"/> </target
+	-->
+
+
+	<!-- Build ASdocs function -->
+	<target name="createASDocs"
+			description="Run the ASDoc executable and generate the ASDocs to the new output folder">
+
+		<exec executable="${asdoc.exe}"
+			  failonerror="true">
+
+			<arg line="-doc-sources ${docsources}"/>
+
+			<arg value="-window-title"/>
+			<arg value="'${project}'"/>
+
+			<arg value="-output"/>
+			<arg value="${basedir}/${docsoutputfolder}"/>
+
+			<arg value="-external-library-path"/>
+			<arg value="${basedir}/${exlibpath}"/>
+		</exec>
+
+		<echo message="${project} ASDocs created"/>
+
+	</target>
+
+	<!--
+		 Build SWC from source
+	-->
+	<target name="buildSWC"
+			description="Compile the SWC file for the Librayr Project">
+		<exec executable="${compc.exe}"
+			  failonerror="true">
+			<arg value="-output"/>
+			<arg value="${basedir}/${liboutputfolder}/${liboutputfile}"/>
+
+			<arg value="-source-path"/>
+			<arg value="../src"/>
+
+			<arg value="-include-sources"/>
+			<arg value="../src"/>
+
+			<arg value="-external-library-path"/>
+			<arg value="${basedir}/${exlibpath}"/>
+
+			<arg value="-external-library-path"/>
+			<arg value="${FLEX_HOME}/frameworks/libs/player/${playerversion}/"/>
+
+		</exec>
+
+		<echo message="${project} SWC created"/>
+
+	</target>
+
+	<target name="copySource"
+			description="Copies source to build folder">
+
+		<copy todir="src">
+			<fileset dir="../src"
+					 includes="**"/>
+		</copy>
+
+	</target>
+
+</project>

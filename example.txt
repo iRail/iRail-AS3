@@ -1,0 +1,62 @@
+import be.irail.api.IRailAPI;
+import be.irail.api.core.DateTimeIndicator;
+import be.irail.api.core.LanguageCode;
+import be.irail.api.data.scheduler.TrainConnection;
+import be.irail.api.data.stations.IRailStation;
+import be.irail.api.event.IRailErrorEvent;
+import be.irail.api.event.IRailResult;
+import be.irail.api.event.IRailResultEvent;
+
+private var _irail:IRailAPI;
+
+private function init():void {
+	_irail = new IRailAPI();
+	_irail.stations.addEventListener(IRailErrorEvent.IO_ERROR, handeIRailIOError);
+	_irail.scheduler.addEventListener(IRailErrorEvent.IO_ERROR, handeIRailIOError);
+
+	getAllStations();
+}
+
+private function getAllStations():void {
+	_irail.stations.getAllStations();
+	_irail.stations.addEventListener(IRailResultEvent.ALL_STATIONS_RESULT, onAllStationsResult);
+}
+
+private function onAllStationsResult(event:IRailResultEvent):void {
+	_irail.stations.removeEventListener(IRailResultEvent.ALL_STATIONS_RESULT, onAllStationsResult);
+	var result:IRailResult = event.result;
+
+	//traces the name of every station
+	for each (var train:IRailStation in result.data) {
+		trace(train.formattedName + " (" + train.name + ")");
+	}
+}
+
+private function getRoute():void {
+	_irail.scheduler.schedule(new IRailStation("TORHOUT"), new IRailStation("LICHTERVELDE"), new Date(), true, DateTimeIndicator.ARRIVAL, 2, LanguageCode.DUTCH);
+	_irail.scheduler.addEventListener(IRailResultEvent.SCHEDULER_RESULT, onSchedulerResult);
+}
+
+private function onSchedulerResult(event:IRailResultEvent):void {
+	_irail.scheduler.removeEventListener(IRailResultEvent.SCHEDULER_RESULT, onSchedulerResult);
+	var result:IRailResult = event.result;
+
+	for each (var connection:TrainConnection in result.data) {
+		trace("DEPARTURE::\n" +
+  "date: " + connection.departure.dateTime + "\n",
+  "station: " + connection.departure.station.name + "\n",
+  "duration: " + connection.durationInMinutes + " minutes (" + connection.formattedDuration + ")\n",
+  "delay: " + connection.delay + "\n",
+  "ARRIVAL::\n" +
+  "date: " + connection.arrival.dateTime + "\n",
+  "station: " + connection.arrival.station.name + "\n",
+  "trains:" + connection.trains);
+
+		trace("--------------");
+	}
+	trace("Number of results: " + result.data.length);
+}
+
+private function handeIRailIOError(event:IRailErrorEvent):void {
+	//EUH OH, could not connect to the server
+}
