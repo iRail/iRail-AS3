@@ -8,7 +8,13 @@ package be.irail.api.core {
 	 * @author Joris Timmerman
 	 */
 	public class IRailServiceURL {
-		public static const ALL_STATIONS_URL:String = "http://dev.irail.be/api/stations.php";
-		public static const SCHEDULER_URL:String = "http://dev.irail.be/api/trains.php";
+
+		// DEVELOPMENT
+		/*public static const ALL_STATIONS_URL:String = "http://dev.irail.be/api/stations.php";
+		 public static const SCHEDULER_URL:String = "http://dev.irail.be/api/trains.php";*/
+
+		// PRODUCTION
+		public static const ALL_STATIONS_URL:String = "http://api.irail.be/stations.php";
+		public static const SCHEDULER_URL:String = "http://api.irail.be/trains.php";
 	}
 }

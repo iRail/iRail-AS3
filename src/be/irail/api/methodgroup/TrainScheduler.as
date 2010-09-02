@@ -28,12 +28,13 @@ package be.irail.api.methodgroup {
 		 * @param includeTime (optional) If true, will include time in <code>dateTime</code> in query, else te query will only send a date
 		 * @param dateTimeIndicator (optional) Indicate what the selected date and time indicates, arrival or departure. See <code>be.irail.api.core.DateTimeIndicator</code> for values. (default: departure)
 		 * @param trainsOnly (optional) Return only trains or also other means of transportation, like busses and metro.
+		 * @param numResults (optional) Number of results to return
 		 * @param langCode (optional) Language code, see <code>be.irail.api.core.LanguageCode</code> for values
 		 *
 		 * @see be.irail.api.core.DateTimeIndicator
 		 * @see be.irail.api.core.LanguageCode
 		 */
-		public function getRoutes(from:IRailStation, to:IRailStation, dateTime:Date = null, includeTime:Boolean = true, dateTimeIndicator:String = "depart", trainsOnly:Boolean = false, langCode:String = ""):void {
+		public function getRoutes(from:IRailStation, to:IRailStation, dateTime:Date = null, includeTime:Boolean = true, dateTimeIndicator:String = "depart", trainsOnly:Boolean = false, numResults:int = -1, langCode:String = ""):void {
 			var serviceURL:String = IRailServiceURL.SCHEDULER_URL;
 			var loader:URLLoader = new URLLoader();
 			var request:URLRequest = new URLRequest(serviceURL);
@@ -59,6 +60,10 @@ package be.irail.api.methodgroup {
 			}
 
 			vars.trainsonly = (trainsOnly) ? 1 : 0;
+
+			if (numResults > 0) {
+				vars.results = numResults;
+			}
 
 			request.data = vars;
 
@@ -135,7 +140,7 @@ package be.irail.api.methodgroup {
 
 			var year:String = String(dateObj.getFullYear()).substring(2, 4);
 
-			var date:String = day + "-" + month + "-" + year;
+			var date:String = day + month + year;
 			var time:String = dateObj.hours + ":" + dateObj.minutes;
 
 			return [date, time];

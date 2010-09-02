@@ -40,17 +40,12 @@ package be.irail.api.methodgroup {
 				var irailStation:IRailStation = new IRailStation(station.text().toString());
 				var location:String = station.@location;
 
-				location = location.split(",").join(".");
+				//Fixed issue #5 - Notice the . instead of , for the coordinates! 
+				//location = location.split(",").join(".");
 
 				var coordinates:Array = location.split(" ");
 				irailStation.longitude = coordinates[0];
 				irailStation.latitude = coordinates[1];
-
-				// check for errors in longitude and latitude
-				// irail issue 5
-				if (isNaN(irailStation.longitude) || isNaN(irailStation.latitude)) {
-					trace("" + irailStation.name);
-				}
 
 				result.push(irailStation);
 			}
