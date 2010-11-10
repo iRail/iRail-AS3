@@ -9,6 +9,7 @@ package be.irail.api.event {
 	 */
 	public class IRailErrorEvent extends ErrorEvent {
 		public static const IO_ERROR:String = "ioError";
+		public static const API_ERROR:String = "apiError";
 
 		// ----------------------------
 		// originalErrorEvent
@@ -24,9 +25,14 @@ package be.irail.api.event {
 			return _originalErrorEvent;
 		}
 
-		public function IRailErrorEvent(type:String, originalEvent:ErrorEvent, bubbles:Boolean = false, cancelable:Boolean = false, text:String = "") {
+		public function set originalErrorEvent(value:ErrorEvent):void {
+			if (value != _originalErrorEvent) {
+				_originalErrorEvent = value;
+			}
+		}
+
+		public function IRailErrorEvent(type:String, bubbles:Boolean = false, cancelable:Boolean = false, text:String = "") {
 			super(type, bubbles, cancelable, text);
-			_originalErrorEvent = originalEvent;
 		}
 	}
 }

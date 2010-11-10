@@ -1,6 +1,8 @@
 package be.irail.api {
+	import be.irail.api.methodgroup.Liveboards;
+	import be.irail.api.methodgroup.Scheduler;
 	import be.irail.api.methodgroup.Stations;
-	import be.irail.api.methodgroup.TrainScheduler;
+	import be.irail.api.methodgroup.Vehicles;
 
 	/**
 	 * Main class containing all methodgroups.
@@ -11,17 +13,21 @@ package be.irail.api {
 	 */
 	public class IRailAPI {
 		private var _stations:Stations;
-		private var _scheduler:TrainScheduler;
+		private var _scheduler:Scheduler;
+		private var _liveBoard:Liveboards;
+		private var _vehicles:Vehicles;
 
 		public function IRailAPI() {
 			_stations = new Stations();
-			_scheduler = new TrainScheduler();
+			_scheduler = new Scheduler();
+			_liveBoard = new Liveboards();
+			_vehicles = new Vehicles();
 		}
 
 		/**
-		 * Train scheduler
+		 * Scheduler
 		 */
-		public function get scheduler():TrainScheduler {
+		public function get scheduler():Scheduler {
 			return _scheduler;
 		}
 
@@ -32,5 +38,18 @@ package be.irail.api {
 			return _stations;
 		}
 
+		/**
+		 * Lifeboards
+		 */
+		public function get liveboards():Liveboards {
+			return _liveBoard;
+		}
+
+		/**
+		 * Vehicules
+		 */
+		public function get vehicles():Vehicles {
+			return _vehicles;
+		}
 	}
 }

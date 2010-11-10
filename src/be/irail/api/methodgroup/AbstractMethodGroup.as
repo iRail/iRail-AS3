@@ -1,6 +1,7 @@
 package be.irail.api.methodgroup {
 	import be.irail.api.event.IRailErrorEvent;
 
+	import flash.events.ErrorEvent;
 	import flash.events.EventDispatcher;
 	import flash.events.IOErrorEvent;
 
@@ -16,8 +17,20 @@ package be.irail.api.methodgroup {
 		 * Catches IO error events when the server is unavailable
 		 */
 		protected function onIOError(event:IOErrorEvent):void {
-			dispatchEvent(new IRailErrorEvent(IRailErrorEvent.IO_ERROR, event, true));
+			var evt:IRailErrorEvent = new IRailErrorEvent(IRailErrorEvent.IO_ERROR, true);
+			evt.originalErrorEvent = event;
+			dispatchEvent(evt);
 		}
+
+		/**
+		 * Handles API error events
+		 */
+		protected function onAPIError(message:String):void {
+			var evt:IRailErrorEvent = new IRailErrorEvent(IRailErrorEvent.API_ERROR, true, false, message);
+			dispatchEvent(evt);
+		}
+
+
 
 	}
 }

@@ -1,6 +1,7 @@
 package be.irail.api.methodgroup {
-	import be.irail.api.core.IRailServiceURL;
-	import be.irail.api.data.stations.IRailStation;
+	import be.irail.api.core.IRServiceURL;
+	import be.irail.api.data.stations.IRStation;
+	import be.irail.api.data.stations.IRStationListFilter;
 	import be.irail.api.event.IRailResult;
 	import be.irail.api.event.IRailResultEvent;
 
@@ -8,9 +9,10 @@ package be.irail.api.methodgroup {
 	import flash.events.IOErrorEvent;
 	import flash.net.URLLoader;
 	import flash.net.URLRequest;
+	import flash.net.URLVariables;
 
 	/**
-	 * Contains method for retreiving station list.
+	 * Contains methods for retreiving station lists.
 	 *<br/><br/>
 	 * created 06/08/2010
 	 * @author Joris Timmerman
@@ -21,10 +23,33 @@ package be.irail.api.methodgroup {
 		 * Retreives a list of all stations in Belgium
 		 */
 		public function getAllStations():void {
-			var serviceURL:String = IRailServiceURL.ALL_STATIONS_URL;
+			getFilteredStationList([]);
+		}
 
-			var loader:URLLoader = new URLLoader();
-			var request:URLRequest = new URLRequest(serviceURL);
+		/**
+		 * Returns a filtered list of stations
+		 * @param filters Array of StationListFilter objects to filter station list.
+		 * @see StationListFilter
+		 */
+		public function getFilteredStationList(filters:Array):void {
+			var serviceURL:String = IRServiceURL.ALL_STATIONS_URL;
+
+			var loader:URLLoader = new URLLoader(),
+				request:URLRequest = new URLRequest(serviceURL),
+				vars:URLVariables = new URLVariables();
+
+			if (filters) {
+				var filterLen:int = filters.length, i:int;
+				for (i = 1; i <= filterLen; i++) {
+					if (filters[i - 1] is IRStationListFilter) {
+						var filter:IRStationListFilter = IRStationListFilter(filters[i - 1]);
+						vars["type" + i] = filter.type;
+						vars["value" + i] = filter.value;
+					}
+				}
+			}
+
+			request.data = vars;
 
 			loader.addEventListener(Event.COMPLETE, onResponse);
 			loader.addEventListener(IOErrorEvent.IO_ERROR, onIOError);
@@ -33,25 +58,27 @@ package be.irail.api.methodgroup {
 
 		private function onResponse(event:Event):void {
 			var data:XML = XML(event.target.data);
-			var timestamp:String = data.@timestamp;
+			if ("error" in data) {
+				onAPIError(data.error);
+			} else {
+				var timestamp:String = data.@timestamp;
+				var version:String = data.@version;
 
-			var result:Array = [];
-			for each (var station:XML in data..station) {
-				var irailStation:IRailStation = new IRailStation(station.text().toString());
-				var location:String = station.@location;
+				var result:Array = [];
+				for each (var station:XML in data..station) {
+					var irailStation:IRStation = new IRStation(station.text().toString());
+					var location:String = station.@location;
 
-				//Fixed issue #5 - Notice the . instead of , for the coordinates! 
-				//location = location.split(",").join(".");
+					var coordinates:Array = location.split(" ");
+					irailStation.longitude = coordinates[0];
+					irailStation.latitude = coordinates[1];
 
-				var coordinates:Array = location.split(" ");
-				irailStation.longitude = coordinates[0];
-				irailStation.latitude = coordinates[1];
+					result.push(irailStation);
+				}
 
-				result.push(irailStation);
+				var iRailResultObject:IRailResult = new IRailResult(result, timestamp, version);
+				dispatchEvent(new IRailResultEvent(IRailResultEvent.STATION_LIST_RESULT, iRailResultObject));
 			}
-
-			var iRailResultObject:IRailResult = new IRailResult(timestamp, result);
-			dispatchEvent(new IRailResultEvent(IRailResultEvent.ALL_STATIONS_RESULT, iRailResultObject));
 		}
 
 	}

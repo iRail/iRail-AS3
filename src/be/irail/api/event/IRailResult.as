@@ -21,8 +21,27 @@ package be.irail.api.event {
 		}
 
 		public function set timestamp(value:String):void {
-			if (value !== _timestamp) {
+			if (value != _timestamp) {
 				_timestamp = value;
+			}
+		}
+
+		// ----------------------------
+		// version
+		// ----------------------------
+
+		private var _version:String;
+
+		/**
+		 * Data version
+		 */
+		public function get version():String {
+			return _version;
+		}
+
+		public function set version(value:String):void {
+			if (value != _version) {
+				_version = value;
 			}
 		}
 
@@ -45,9 +64,10 @@ package be.irail.api.event {
 			}
 		}
 
-		public function IRailResult(timestamp:String, data:Object):void {
-			this.timestamp = timestamp;
+		public function IRailResult(data:Object, timestamp:String = null, version:String = null):void {
 			this.data = data;
+			this.timestamp = timestamp;
+			this.version = version;
 		}
 	}
 }
