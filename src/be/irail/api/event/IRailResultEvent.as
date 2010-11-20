@@ -15,7 +15,7 @@ package be.irail.api.event {
 		public static const STATION_LIST_RESULT:String = "allStationsResult";
 		public static const SCHEDULER_RESULT:String = "schedulerResult";
 		public static const LIVEBOARD_RESULT:String = "liveboardResult";
-		public static const VEHICULE_INFO_RESULT:String = "vehicleResult";
+		public static const VEHICLE_INFO_RESULT:String = "vehicleResult";
 
 		private var _data:IRailResult;
 

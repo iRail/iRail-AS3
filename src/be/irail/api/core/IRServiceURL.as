@@ -10,15 +10,15 @@ package be.irail.api.core {
 	public class IRServiceURL {
 
 		// DEVELOPMENT
-		/*public static const ALL_STATIONS_URL:String = "http://dev.api.irail.be/stations/";
+		public static const ALL_STATIONS_URL:String = "http://dev.api.irail.be/stations/";
 		public static const SCHEDULER_URL:String = "http://dev.api.irail.be/connections/";
-		public static const LIVEBOARD_URL:String = "http://dev.api.irail.be/liveboard/";
-		public static const VEHICULE_URL:String = "http://dev.api.irail.be/vehicle/";*/
+		public static const LIVEBOARD_URL:String = "http://dev.api.irail.be/liveboard.php";
+		public static const VEHICLE_URL:String = "http://dev.api.irail.be/vehicle.php";
 
 		// PRODUCTION
-		public static const ALL_STATIONS_URL:String = "http://api.irail.be/stations/";
+	/*	public static const ALL_STATIONS_URL:String = "http://api.irail.be/stations/";
 		public static const SCHEDULER_URL:String = "http://api.irail.be/connections/";
-		public static const LIVEBOARD_URL:String = "http://api.irail.be/liveboard/";
-		public static const VEHICULE_URL:String = "http://api.irail.be/vehicle/";
+		public static const LIVEBOARD_URL:String = "http://api.irail.be/liveboard.php";
+		public static const VEHICLE_URL:String = "http://api.irail.be/vehicle/";*/
 	}
 }

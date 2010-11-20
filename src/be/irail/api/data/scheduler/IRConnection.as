@@ -1,4 +1,6 @@
 package be.irail.api.data.scheduler {
+	import be.irail.api.data.scheduler.gate.ArrivalIRGate;
+	import be.irail.api.data.scheduler.gate.DepartureIRGate;
 
 	/**
 	 * Contains data of a route between to stations.<br/>
@@ -29,16 +31,16 @@ package be.irail.api.data.scheduler {
 		// departure
 		// ----------------------------
 
-		private var _departure:IRGate;
+		private var _departure:DepartureIRGate;
 
 		/**
 		 * Departure information
 		 */
-		public function get departure():IRGate {
+		public function get departure():DepartureIRGate {
 			return _departure;
 		}
 
-		public function set departure(value:IRGate):void {
+		public function set departure(value:DepartureIRGate):void {
 			if (value !== _departure) {
 				_departure = value;
 			}
@@ -76,77 +78,56 @@ package be.irail.api.data.scheduler {
 		// arrival
 		// ----------------------------
 
-		private var _arrival:IRGate;
+		private var _arrival:ArrivalIRGate;
 
 		/**
 		 * Arrival information
 		 */
-		public function get arrival():IRGate {
+		public function get arrival():ArrivalIRGate {
 			return _arrival;
 		}
 
-		public function set arrival(value:IRGate):void {
+		public function set arrival(value:ArrivalIRGate):void {
 			if (value !== _arrival) {
 				_arrival = value;
 			}
 		}
 
 		// ----------------------------
-		// durationInMinutes
-		// ----------------------------
-		/**
-		 * Returns the duration in minutes
-		 */
-		public function get durationInMinutes():Number {
-			if (_formattedDuration.indexOf(":") > -1) {
-				var hours:Number = _formattedDuration.split(":")[0];
-				var minutes:Number = _formattedDuration.split(":")[1];
-				return (hours * 60) + minutes;
-			}
-
-			if (!isNaN(Number(_formattedDuration))) {
-				return Number(_formattedDuration);
-			}
-
-			return 0;
-		}
-
-
-		// ----------------------------
-		// formattedDuration
+		// duration
 		// ----------------------------
 
-		private var _formattedDuration:String = "";
+		private var _duration:Number;
 
 		/**
-		 * Trip duration string
+		 * Trip duration in seconds
 		 */
-		public function get formattedDuration():String {
-			return _formattedDuration;
+		public function get duration():Number {
+			return _duration;
 		}
 
-		public function set formattedDuration(value:String):void {
-			if (value != _formattedDuration) {
-				_formattedDuration = value;
+		public function set duration(value:Number):void {
+			if (value != _duration) {
+				_duration = value;
 			}
 		}
 
 		// ----------------------------
-		// delay
+		// isDelayed
 		// ----------------------------
 
-		private var _delay:Number = 0;
+		private var _isDelayed:Boolean;
 
 		/**
-		 * Trains is delayed
+		 * Train is delayed
 		 */
-		public function get delay():Number {
-			return _delay;
+		public function get isDelayed():Boolean {
+			return _isDelayed;
 		}
 
-		public function set delay(value:Number):void {
-			if (value != _delay) {
-				_delay = value;
+		public function set isDelayed(value:Boolean):void {
+			if (value !== _isDelayed) {
+				_isDelayed = value;
 			}
 		}
 

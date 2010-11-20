@@ -1,14 +1,17 @@
 package be.irail.api.methodgroup {
 	import be.irail.api.core.IRServiceURL;
 	import be.irail.api.data.scheduler.IRConnection;
-	import be.irail.api.data.scheduler.IRGate;
-	import be.irail.api.data.scheduler.IRVehicle;
-	import be.irail.api.data.scheduler.ViaIRGate;
+	import be.irail.api.data.scheduler.gate.ArrivalIRGate;
+	import be.irail.api.data.scheduler.gate.DepartureIRGate;
+	import be.irail.api.data.scheduler.gate.ViaIRGate;
+	import be.irail.api.data.scheduler.gate.via.ViaDepartArrival;
 	import be.irail.api.data.stations.IRStation;
 	import be.irail.api.data.stations.IRStationPlatform;
 	import be.irail.api.event.IRailResult;
 	import be.irail.api.event.IRailResultEvent;
 	import be.irail.api.util.DateUtil;
+	import be.irail.api.util.ParserUtil;
+	import be.irail.api.util.StringUtils;
 
 	import flash.events.Event;
 	import flash.events.IOErrorEvent;
@@ -97,67 +100,52 @@ package be.irail.api.methodgroup {
 					connection.id = connectionXML.@id;
 
 					// departure
-					var departureGate:IRGate = new IRGate(),
-						departureStation:IRStation = new IRStation(connectionXML.departure.station),
-						departureStationLocationXML:String = "" + connectionXML.departure.station.@location,
-						departureStationLocation:Array = departureStationLocationXML.split(" ");
+					var departureGate:DepartureIRGate = new DepartureIRGate()
+					departureGate.station = ParserUtil.parseStationXML(connectionXML.departure.station);
 
-					departureStation.longitude = departureStationLocation[0];
-					departureStation.latitude = departureStationLocation[1];
-					departureGate.station = departureStation;
-
+					departureGate.delay = connectionXML.departure.@delay;
 					departureGate.dateTime = DateUtil.convertISO8601ToDate(connectionXML.departure.time.@formatted);
-					departureGate.platform = new IRStationPlatform(connectionXML.departure.platform, connectionXML.departure.platform.@normal);
-					departureGate.vehicule = new IRVehicle(connectionXML.departure.vehicle);
+					departureGate.platform = new IRStationPlatform(connectionXML.departure.platform, StringUtils.trim(connectionXML.departure.platform.@normal).toLowerCase() == "yes");
+					departureGate.vehicle = ParserUtil.parseVehicle(connectionXML.departure.vehicle);
 					connection.departure = departureGate;
 
 					//vias
 					connection.vias = [];
 					for each (var viaXML:XML in connectionXML.vias.via) {
-						var viaGate:ViaIRGate = new ViaIRGate(),
-							viaStation:IRStation = new IRStation(viaXML.station),
-							viaStationLocationXML:String = "" + viaXML.station.@location,
-							viaStationLocation:Array = viaStationLocationXML.split(" ");
-
+						var viaGate:ViaIRGate = new ViaIRGate();
 						viaGate.id = viaXML.@id;
+						viaGate.station = ParserUtil.parseStationXML(viaXML.station);
 
-						viaStation.longitude = viaStationLocation[0];
-						viaStation.latitude = viaStationLocation[1];
-						viaGate.station = viaStation;
+						var viaDepart:ViaDepartArrival = new ViaDepartArrival();
+						viaDepart.dateTime = DateUtil.convertISO8601ToDate(viaXML.depart.time.@formatted);
+						viaDepart.platform = new IRStationPlatform(viaXML.depart.platform);
+						viaGate.depart = viaDepart;
 
-						viaGate.arrivalDate = DateUtil.convertISO8601ToDate(viaXML.arrival.time.@formatted);
-						viaGate.departTime = DateUtil.convertISO8601ToDate(viaXML.depart.time.@formatted);
-						viaGate.arriveAtPlatform = new IRStationPlatform(viaXML.arrival.platform);
-						viaGate.departAtPlatform = new IRStationPlatform(viaXML.depart.platform);
+						var viaArrival:ViaDepartArrival = new ViaDepartArrival();
+						viaArrival.dateTime = DateUtil.convertISO8601ToDate(viaXML.arrival.time.@formatted);
+						viaArrival.platform = new IRStationPlatform(viaXML.arrival.platform);
+						viaGate.arrival = viaArrival;
 
-						viaGate.vehicule = new IRVehicle(viaXML.vehicle);
-
+						viaGate.vehicle = ParserUtil.parseVehicle(viaXML.vehicle);
 						viaGate.timeBetween = viaXML.timeBetween;
 
 						connection.vias.push(viaGate);
 					}
 
 					//arrival
-					var arrivalGate:IRGate = new IRGate(),
-						arrivalGateStation:IRStation = new IRStation(connectionXML.arrival.station),
-						arrivalStationXML:String = "" + connectionXML.arrival.station.@location,
-						arrivalStationLocation:Array = arrivalStationXML.split(" ");
+					var arrivalGate:ArrivalIRGate = new ArrivalIRGate();
+					arrivalGate.station = ParserUtil.parseStationXML(connectionXML.arrival.station);
 
-					arrivalGateStation.longitude = arrivalStationLocation[0];
-					arrivalGateStation.latitude = arrivalStationLocation[1];
-					arrivalGate.station = arrivalGateStation;
-
-					arrivalGate.platform = new IRStationPlatform(connectionXML.arrival.platform, connectionXML.arrival.platform.@normal);
-					arrivalGate.vehicule = new IRVehicle(connectionXML.arrival.vehicle);
+					arrivalGate.platform = new IRStationPlatform(connectionXML.arrival.platform, StringUtils.trim(connectionXML.arrival.platform.@normal).toLowerCase() == "yes");
+					arrivalGate.vehicle = ParserUtil.parseVehicle(connectionXML.arrival.vehicle);
 
 					arrivalGate.dateTime = DateUtil.convertISO8601ToDate(connectionXML.arrival.time.@formatted)
 
 					connection.arrival = arrivalGate;
 
 					//duration
-					connection.formattedDuration = connectionXML.duration;
-
-					connection.delay = connectionXML.duration.@delay;
+					connection.duration = connectionXML.duration;
+					connection.isDelayed = StringUtils.trim(connectionXML.duration.@delay).toLowerCase() == "yes";
 
 					connections.push(connection);
 				}
@@ -181,7 +169,7 @@ package be.irail.api.methodgroup {
 			var year:String = String(dateObj.getFullYear()).substring(2, 4);
 
 			var date:String = day + month + year;
-			var time:String = dateObj.hours + ":" + dateObj.minutes;
+			var time:String = "" + dateObj.hours + dateObj.minutes;
 
 			return [date, time];
 		}

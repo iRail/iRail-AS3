@@ -4,6 +4,8 @@ package be.irail.api.methodgroup {
 	import be.irail.api.data.stations.IRStationListFilter;
 	import be.irail.api.event.IRailResult;
 	import be.irail.api.event.IRailResultEvent;
+	import be.irail.api.util.ParserUtil;
+	import be.irail.api.util.StringUtils;
 
 	import flash.events.Event;
 	import flash.events.IOErrorEvent;
@@ -66,14 +68,7 @@ package be.irail.api.methodgroup {
 
 				var result:Array = [];
 				for each (var station:XML in data..station) {
-					var irailStation:IRStation = new IRStation(station.text().toString());
-					var location:String = station.@location;
-
-					var coordinates:Array = location.split(" ");
-					irailStation.longitude = coordinates[0];
-					irailStation.latitude = coordinates[1];
-
-					result.push(irailStation);
+					result.push(ParserUtil.parseStationXML(station));
 				}
 
 				var iRailResultObject:IRailResult = new IRailResult(result, timestamp, version);

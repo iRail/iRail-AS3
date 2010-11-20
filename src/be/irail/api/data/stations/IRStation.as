@@ -9,6 +9,25 @@ package be.irail.api.data.stations {
 	public class IRStation {
 		private var _name:String;
 
+		// ----------------------------
+		// id
+		// ----------------------------
+
+		private var _id:String;
+
+		/**
+		 * Station Id (like BE.NMBS.1)
+		 */
+		public function get id():String {
+			return _id;
+		}
+
+		public function set id(value:String):void {
+			if (value !== _id) {
+				_id = value;
+			}
+		}
+
 		/**
 		 * Capitalized station name (like BRUSSEL-ZUID)
 		 */
@@ -55,8 +74,6 @@ package be.irail.api.data.stations {
 
 		/**
 		 * Returns formatted name of the station (like Brussel-Zuid).
-		 *
-		 * Added: 07/08/2010
 		 */
 		public function get formattedName():String {
 			return toTitleCase(this.name);
@@ -72,8 +89,6 @@ package be.irail.api.data.stations {
 		 * Formats station names from capitals to title case.<br/>
 		 * Use as a static function, for example in a Flex application.<br/>
 		 * <code>labelFunction="IRailStation.labelFunction"</code>
-		 *
-		 * Added: 07/08/2010
 		 */
 		public static function labelFunction(data:IRStation):String {
 			return data.formattedName;

@@ -46,7 +46,7 @@ package be.irail.api {
 		}
 
 		/**
-		 * Vehicules
+		 * vehicles
 		 */
 		public function get vehicles():Vehicles {
 			return _vehicles;
