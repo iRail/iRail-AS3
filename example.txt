@@ -1,8 +1,14 @@
 import be.irail.api.IRailAPI;
-import be.irail.api.core.DateTimeIndicator;
 import be.irail.api.core.LanguageCode;
-import be.irail.api.data.scheduler.TrainConnection;
-import be.irail.api.data.stations.IRailStation;
+import be.irail.api.data.liveboard.Liveboard;
+import be.irail.api.data.liveboard.LiveboardDeparture;
+import be.irail.api.data.scheduler.DateTimeIndicator;
+import be.irail.api.data.scheduler.IRConnection;
+import be.irail.api.data.stations.IRStation;
+import be.irail.api.data.stations.IRStationFilterType;
+import be.irail.api.data.stations.IRStationListFilter;
+import be.irail.api.data.vehicle.IRVehicleInformation;
+import be.irail.api.data.vehicle.VehicleStop;
 import be.irail.api.event.IRailErrorEvent;
 import be.irail.api.event.IRailResult;
 import be.irail.api.event.IRailResultEvent;
@@ -14,26 +20,47 @@ private function init():void {
 	_irail.stations.addEventListener(IRailErrorEvent.IO_ERROR, handeIRailIOError);
 	_irail.scheduler.addEventListener(IRailErrorEvent.IO_ERROR, handeIRailIOError);
 
-	getAllStations();
+	//Activate one of these methods to test it
+	//getAllStations();
+	//getLiveBoardInfo();
+	//	getAllStationsFiltered();
+	//getRoute();
+	//getLiveBoardInfo();
+	//getVehicleInfo();
 }
+
+// ----------------------------------------
+// Station list
+// ----------------------------------------
 
 private function getAllStations():void {
 	_irail.stations.getAllStations();
-	_irail.stations.addEventListener(IRailResultEvent.ALL_STATIONS_RESULT, onAllStationsResult);
+	_irail.stations.addEventListener(IRailResultEvent.STATION_LIST_RESULT, onAllStationsResult);
+}
+
+private function getAllStationsFiltered():void {
+	var filter1:IRStationListFilter = new IRStationListFilter(IRStationFilterType.COUNTRY, "belgium");
+	var filter2:IRStationListFilter = new IRStationListFilter(IRStationFilterType.TYPE_OF_TRANSPORT, "train");
+	_irail.stations.getFilteredStationList([filter1, filter2]);
+	_irail.stations.addEventListener(IRailResultEvent.STATION_LIST_RESULT, onAllStationsResult);
 }
 
 private function onAllStationsResult(event:IRailResultEvent):void {
-	_irail.stations.removeEventListener(IRailResultEvent.ALL_STATIONS_RESULT, onAllStationsResult);
+	_irail.stations.removeEventListener(IRailResultEvent.STATION_LIST_RESULT, onAllStationsResult);
 	var result:IRailResult = event.result;
 
 	//traces the name of every station
-	for each (var train:IRailStation in result.data) {
-		trace(train.formattedName + " (" + train.name + ")");
+	for each (var train:IRStation in result.data) {
+		trace(train.formattedName + " (" + train.longitude + "," + train.latitude + ")");
 	}
 }
 
+// ----------------------------------------
+// Scheduler
+// ----------------------------------------
+
 private function getRoute():void {
-	_irail.scheduler.schedule(new IRailStation("TORHOUT"), new IRailStation("LICHTERVELDE"), new Date(), true, DateTimeIndicator.ARRIVAL, 2, LanguageCode.DUTCH);
+	_irail.scheduler.getRoutes(new IRStation("TORHOUT"), new IRStation("GENK"), new Date(), true, DateTimeIndicator.DEPARTURE, ["train"], 4, LanguageCode.DUTCH);
 	_irail.scheduler.addEventListener(IRailResultEvent.SCHEDULER_RESULT, onSchedulerResult);
 }
 
@@ -41,22 +68,77 @@ private function onSchedulerResult(event:IRailResultEvent):void {
 	_irail.scheduler.removeEventListener(IRailResultEvent.SCHEDULER_RESULT, onSchedulerResult);
 	var result:IRailResult = event.result;
 
-	for each (var connection:TrainConnection in result.data) {
+	for each (var connection:IRConnection in result.data) {
 		trace("DEPARTURE::\n" +
-  "date: " + connection.departure.dateTime + "\n",
-  "station: " + connection.departure.station.name + "\n",
-  "duration: " + connection.durationInMinutes + " minutes (" + connection.formattedDuration + ")\n",
-  "delay: " + connection.delay + "\n",
-  "ARRIVAL::\n" +
-  "date: " + connection.arrival.dateTime + "\n",
-  "station: " + connection.arrival.station.name + "\n",
-  "trains:" + connection.trains);
+			  "date: " + connection.departure.dateTime + "\n",
+			  "station: " + connection.departure.station.name + "\n",
+			  "duration: " + connection.duration + " seconds\n",
+			  "delay: " + connection.isDelayed + "\n",
+			  "ARRIVAL::\n" +
+			  "via: " + connection.vias.length + " stations\n" +
+			  "date: " + connection.arrival.dateTime + "\n",
+			  "platform: " + connection.arrival.platform.platformNo + "\n",
+			  "station: " + connection.arrival.station.name + "\n");
 
 		trace("--------------");
 	}
 	trace("Number of results: " + result.data.length);
 }
 
+// ----------------------------------------
+// Liveboard
+// ----------------------------------------
+
+private function getLiveBoardInfo():void {
+	_irail.liveboards.getStationLiveboardByStationName("Brussel-Zuid", new Date(), true);
+	_irail.liveboards.addEventListener(IRailResultEvent.LIVEBOARD_RESULT, onLiveboardResult);
+}
+
+private function onLiveboardResult(event:IRailResultEvent):void {
+	_irail.liveboards.removeEventListener(IRailResultEvent.LIVEBOARD_RESULT, onLiveboardResult);
+	var result:IRailResult = event.result;
+
+	var lb:Liveboard = result.data as Liveboard;
+	trace("Liveboard for station: " + lb.station.formattedName);
+
+	trace("Departures:");
+	for each (var departure:LiveboardDeparture in lb.departures) {
+		trace("Departure no. " + departure.id);
+		trace("Destination: " + departure.station.formattedName);
+		trace("Departing at " + departure.dateTime.toDateString() + " " + departure.dateTime.toTimeString());
+		trace("with " + departure.delay + " seconds of delay");
+		trace("at platform " + departure.platform.platformNo);
+		trace("with train " + departure.vehicle.vehicleCode);
+		trace("")
+	}
+}
+
+// ----------------------------------------
+// Vehicle information
+// ----------------------------------------
+
+private function getVehicleInfo():void {
+	_irail.vehicles.getVehicleInformationByVehicleCode("BE.NMBS.IC545");
+	_irail.vehicles.addEventListener(IRailResultEvent.VEHICLE_INFO_RESULT, onVehicleResult);
+}
+
+private function onVehicleResult(event:IRailResultEvent):void {
+	_irail.vehicles.removeEventListener(IRailResultEvent.VEHICLE_INFO_RESULT, onVehicleResult);
+	var vehiculeInfo:IRVehicleInformation = event.result.data as IRVehicleInformation;
+
+	trace("Information retrieved for vehicule: " + vehiculeInfo.vehicle.vehicleCode);
+	trace("This vehicle will stop at following stations:")
+
+	for each (var stop:VehicleStop in vehiculeInfo.stops) {
+		trace("Stop " + (stop.id + 1) + ":");
+		trace("Station: " + stop.station.formattedName);
+		trace(stop.dateTime.toDateString(), "at " + stop.dateTime.toTimeString());
+		trace("with a delay of " + stop.delay + " seconds");
+	}
+
+}
+
 private function handeIRailIOError(event:IRailErrorEvent):void {
 	//EUH OH, could not connect to the server
+	trace("ERROR! ", event.text)
 }
