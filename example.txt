@@ -19,11 +19,13 @@ private function init():void {
 	_irail = new IRailAPI();
 	_irail.stations.addEventListener(IRailErrorEvent.IO_ERROR, handeIRailIOError);
 	_irail.scheduler.addEventListener(IRailErrorEvent.IO_ERROR, handeIRailIOError);
-
+	_irail.liveboards.addEventListener(IRailErrorEvent.IO_ERROR, handeIRailIOError);
+	_irail.vehicles.addEventListener(IRailErrorEvent.IO_ERROR, handeIRailIOError);
+		
 	//Activate one of these methods to test it
 	//getAllStations();
 	//getLiveBoardInfo();
-	//	getAllStationsFiltered();
+	//getAllStationsFiltered();
 	//getRoute();
 	//getLiveBoardInfo();
 	//getVehicleInfo();
