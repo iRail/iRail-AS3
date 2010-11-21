@@ -3,8 +3,7 @@ package be.irail.api.core {
 	/**
 	 * Class holding API service endpoint URLs.<br/>
 	 * This makes updating URLs easier.<br/>
-	 *<br/><br/>
-	 * created 06/08/2010
+	 *<br/>
 	 * @author Joris Timmerman
 	 */
 	public class IRServiceURL {
