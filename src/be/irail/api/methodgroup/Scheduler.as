@@ -171,10 +171,19 @@ package be.irail.api.methodgroup {
 				month = "0" + month;
 			}
 
-			var year:String = String(dateObj.getFullYear()).substring(2, 4);
+			var year:String = String(dateObj.getFullYear()).substring(2, 4),
+				date:String = day + month + year,
+				hours:String = String(dateObj.hours),
+				minutes:String = String(dateObj.minutes);
 
-			var date:String = day + month + year;
-			var time:String = "" + dateObj.hours + dateObj.minutes;
+			if (hours.length == 1) {
+				hours = "0" + hours;
+			}
+			if (minutes.length == 1) {
+				minutes = "0" + minutes;
+			}
+
+			var time:String = "" + hours + minutes;
 
 			return [date, time];
 		}

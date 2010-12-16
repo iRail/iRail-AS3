@@ -1,4 +1,5 @@
 package be.irail.api.data.scheduler.gate {
+
 	import be.irail.api.data.stations.IRStation;
 	import be.irail.api.data.stations.IRStationPlatform;
 	import be.irail.api.data.vehicle.IRVehicle;
@@ -34,7 +35,7 @@ package be.irail.api.data.scheduler.gate {
 		// delay
 		// ----------------------------
 
-		private var _delay:Number;
+		private var _delay:Number = 0;
 
 		/**
 		 * arrival/departure delay in seconds
