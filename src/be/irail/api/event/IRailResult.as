@@ -6,6 +6,7 @@ package be.irail.api.event {
 	 * created 06/08/2010
 	 * @author Joris Timmerman
 	 */
+	[RemoteClass(alias="irail.IRailResult")]
 	public class IRailResult {
 		// ----------------------------
 		// timestamp

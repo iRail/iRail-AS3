@@ -139,5 +139,10 @@ package be.irail.api.data.stations {
 			//return the formatted string
 			return retValue;
 		}
+
+		public function toString():String {
+			return this.formattedName;
+		}
+
 	}
 }

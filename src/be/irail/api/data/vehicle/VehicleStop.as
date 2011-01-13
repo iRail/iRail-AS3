@@ -1,4 +1,5 @@
 package be.irail.api.data.vehicle {
+
 	import be.irail.api.data.stations.IRStation;
 
 	/**
@@ -46,6 +47,7 @@ package be.irail.api.data.vehicle {
 				_delay = value;
 			}
 		}
+
 		// ----------------------------
 		// station
 		// ----------------------------
@@ -83,5 +85,6 @@ package be.irail.api.data.vehicle {
 				_dateTime = value;
 			}
 		}
+
 	}
 }
