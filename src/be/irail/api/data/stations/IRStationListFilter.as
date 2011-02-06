@@ -27,7 +27,7 @@ package be.irail.api.data.stations {
 		}
 
 		public function set type(value:String):void {
-			if (value !== _type) {
+			if (value != _type) {
 				_type = value;
 			}
 		}
@@ -43,7 +43,7 @@ package be.irail.api.data.stations {
 		}
 
 		public function set value(value:Object):void {
-			if (value !== _value) {
+			if (value != _value) {
 				_value = value;
 			}
 		}

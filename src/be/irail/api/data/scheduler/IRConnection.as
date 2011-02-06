@@ -41,7 +41,7 @@ package be.irail.api.data.scheduler {
 		}
 
 		public function set departure(value:DepartureIRGate):void {
-			if (value !== _departure) {
+			if (value != _departure) {
 				_departure = value;
 			}
 		}
@@ -60,7 +60,7 @@ package be.irail.api.data.scheduler {
 		}
 
 		public function set vias(value:Array):void {
-			if (value !== _via) {
+			if (value != _via) {
 				_via = value;
 			}
 		}
@@ -88,7 +88,7 @@ package be.irail.api.data.scheduler {
 		}
 
 		public function set arrival(value:ArrivalIRGate):void {
-			if (value !== _arrival) {
+			if (value != _arrival) {
 				_arrival = value;
 			}
 		}
@@ -126,7 +126,7 @@ package be.irail.api.data.scheduler {
 		}
 
 		public function set isDelayed(value:Boolean):void {
-			if (value !== _isDelayed) {
+			if (value != _isDelayed) {
 				_isDelayed = value;
 			}
 		}

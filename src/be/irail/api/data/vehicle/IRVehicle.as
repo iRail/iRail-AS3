@@ -71,7 +71,7 @@ package be.irail.api.data.vehicle {
 		}
 
 		public function set latitude(value:Number):void {
-			if (value !== _latitude) {
+			if (value != _latitude) {
 				_latitude = value;
 			}
 		}

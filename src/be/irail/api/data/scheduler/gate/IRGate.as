@@ -45,7 +45,7 @@ package be.irail.api.data.scheduler.gate {
 		}
 
 		public function set delay(value:Number):void {
-			if (value !== _delay) {
+			if (value != _delay) {
 				_delay = value;
 			}
 		}
@@ -83,7 +83,7 @@ package be.irail.api.data.scheduler.gate {
 		}
 
 		public function set platform(value:IRStationPlatform):void {
-			if (value !== _platform) {
+			if (value != _platform) {
 				_platform = value;
 			}
 		}

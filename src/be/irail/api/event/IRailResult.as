@@ -60,12 +60,12 @@ package be.irail.api.event {
 		}
 
 		public function set data(value:Object):void {
-			if (value !== _data) {
+			if (value != _data) {
 				_data = value;
 			}
 		}
 
-		public function IRailResult(data:Object, timestamp:String = null, version:String = null):void {
+		public function IRailResult(data:Object = null, timestamp:String = null, version:String = null):void {
 			this.data = data;
 			this.timestamp = timestamp;
 			this.version = version;

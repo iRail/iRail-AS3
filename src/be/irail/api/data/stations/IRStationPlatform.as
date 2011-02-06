@@ -33,7 +33,7 @@ package be.irail.api.data.stations {
 		}
 
 		public function set isNormal(value:Boolean):void {
-			if (value !== _isNormal) {
+			if (value != _isNormal) {
 				_isNormal = value;
 			}
 		}

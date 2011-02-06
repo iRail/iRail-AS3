@@ -1,4 +1,5 @@
 package be.irail.api.data.liveboard {
+
 	import be.irail.api.data.stations.IRStation;
 
 	/**
@@ -44,7 +45,7 @@ package be.irail.api.data.liveboard {
 		}
 
 		public function set departures(value:Array):void {
-			if (value !== _departures) {
+			if (value != _departures) {
 				_departures = value;
 			}
 		}
@@ -63,7 +64,7 @@ package be.irail.api.data.liveboard {
 		}
 
 		public function set arrivals(value:Array):void {
-			if (value !== _arrivals) {
+			if (value != _arrivals) {
 				_arrivals = value;
 			}
 		}

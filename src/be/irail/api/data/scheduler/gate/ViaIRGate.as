@@ -24,7 +24,7 @@ package be.irail.api.data.scheduler.gate {
 		}
 
 		public function set id(value:int):void {
-			if (value !== _id) {
+			if (value != _id) {
 				_id = value;
 			}
 		}
@@ -120,7 +120,7 @@ package be.irail.api.data.scheduler.gate {
 		}
 
 		public function set depart(value:ViaDepartArrival):void {
-			if (value !== _depart) {
+			if (value != _depart) {
 				_depart = value;
 			}
 		}

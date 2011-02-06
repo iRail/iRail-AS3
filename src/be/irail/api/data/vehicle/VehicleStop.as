@@ -24,7 +24,7 @@ package be.irail.api.data.vehicle {
 		}
 
 		public function set id(value:int):void {
-			if (value !== _id) {
+			if (value != _id) {
 				_id = value;
 			}
 		}
@@ -43,7 +43,7 @@ package be.irail.api.data.vehicle {
 		}
 
 		public function set delay(value:Number):void {
-			if (value !== _delay) {
+			if (value != _delay) {
 				_delay = value;
 			}
 		}
@@ -81,7 +81,7 @@ package be.irail.api.data.vehicle {
 		}
 
 		public function set dateTime(value:Date):void {
-			if (value !== _dateTime) {
+			if (value != _dateTime) {
 				_dateTime = value;
 			}
 		}

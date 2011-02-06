@@ -24,7 +24,7 @@ package be.irail.api.data.liveboard {
 		}
 
 		public function set id(value:int):void {
-			if (value !== _id) {
+			if (value != _id) {
 				_id = value;
 			}
 		}
@@ -80,7 +80,7 @@ package be.irail.api.data.liveboard {
 		}
 
 		public function set platform(value:IRStationPlatform):void {
-			if (value !== _platform) {
+			if (value != _platform) {
 				_platform = value;
 			}
 		}

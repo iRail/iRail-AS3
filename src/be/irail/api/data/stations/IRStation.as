@@ -23,7 +23,7 @@ package be.irail.api.data.stations {
 		}
 
 		public function set id(value:String):void {
-			if (value !== _id) {
+			if (value != _id) {
 				_id = value;
 			}
 		}
@@ -67,7 +67,7 @@ package be.irail.api.data.stations {
 		}
 
 		public function set latitude(value:Number):void {
-			if (value !== _latitude) {
+			if (value != _latitude) {
 				_latitude = value;
 			}
 		}
