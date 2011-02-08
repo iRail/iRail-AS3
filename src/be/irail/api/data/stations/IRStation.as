@@ -41,7 +41,26 @@ package be.irail.api.data.stations {
 			}
 		}
 
-		private var _longitude:Number;
+		// ----------------------------
+		// hasLocation
+		// ----------------------------
+
+		private var _hasLocation:Boolean;
+
+		/**
+		 * Station has a location defined
+		 */
+		public function get hasLocation():Boolean {
+			return _hasLocation ? _hasLocation : (!isNaN(longitude) && !isNaN(latitude));
+		}
+
+		public function set hasLocation(value:Boolean):void {
+			if (value != _hasLocation) {
+				_hasLocation = value;
+			}
+		}
+
+		private var _longitude:Number = NaN;
 
 		/**
 		 * Station position: longitude
@@ -57,7 +76,7 @@ package be.irail.api.data.stations {
 		}
 
 
-		private var _latitude:Number;
+		private var _latitude:Number = NaN;
 
 		/**
 		 * Station position: latitude

@@ -1,4 +1,5 @@
 package be.irail.api.util {
+
 	import be.irail.api.data.stations.IRStation;
 	import be.irail.api.data.vehicle.IRVehicle;
 
@@ -15,10 +16,19 @@ package be.irail.api.util {
 				throw new Error("Invalid xml input");
 			}
 
-			var irailStation:IRStation = new IRStation(data.text().toString());
+			var irailStation:IRStation = new IRStation(data.text().toString()),
+				xCoordValid:Boolean = StringUtils.trim(data.@locationX).length > 0 && !isNaN(Number(data.@locationX)),
+				yCoordValid:Boolean = StringUtils.trim(data.@locationY).length > 0 && !isNaN(Number(data.@locationY));
+
 			irailStation.id = data.@id;
-			irailStation.longitude = data.@locationX;
-			irailStation.latitude = data.@locationY;
+
+			irailStation.hasLocation = false;
+			if (xCoordValid && yCoordValid) {
+				irailStation.hasLocation = true;
+				irailStation.longitude = Number(data.@locationX);
+				irailStation.latitude = Number(data.@locationY);
+			}
+
 			return irailStation;
 		}
 
