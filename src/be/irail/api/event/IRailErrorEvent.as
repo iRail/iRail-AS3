@@ -1,5 +1,7 @@
 package be.irail.api.event {
+
 	import flash.events.ErrorEvent;
+	import flash.events.Event;
 
 	/**
 	 * Error event dispatched when fatal error occurs within the API
@@ -8,7 +10,8 @@ package be.irail.api.event {
 	 * @author Joris Timmerman
 	 */
 	public class IRailErrorEvent extends ErrorEvent {
-		public static const IO_ERROR:String = "ioError";
+		public static const IO_ERROR:String = "apiIOError";
+
 		public static const API_ERROR:String = "apiError";
 
 		// ----------------------------

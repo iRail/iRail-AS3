@@ -1,4 +1,5 @@
 package be.irail.api {
+
 	import be.irail.api.methodgroup.Liveboards;
 	import be.irail.api.methodgroup.Scheduler;
 	import be.irail.api.methodgroup.Stations;
@@ -13,8 +14,11 @@ package be.irail.api {
 	 */
 	public class IRailAPI {
 		private var _stations:Stations;
+
 		private var _scheduler:Scheduler;
+
 		private var _liveBoard:Liveboards;
+
 		private var _vehicles:Vehicles;
 
 		public function IRailAPI() {
@@ -22,6 +26,8 @@ package be.irail.api {
 			_scheduler = new Scheduler();
 			_liveBoard = new Liveboards();
 			_vehicles = new Vehicles();
+
+
 		}
 
 		/**

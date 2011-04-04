@@ -64,7 +64,6 @@ package be.irail.api.methodgroup {
 			if ("error" in data) {
 				onAPIError(data.error);
 			} else {
-				//TODO
 				var timestamp:String = data.@timestamp;
 				var version:String = data.@version;
 

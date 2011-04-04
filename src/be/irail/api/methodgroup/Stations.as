@@ -2,12 +2,10 @@ package be.irail.api.methodgroup {
 
 	import be.irail.api.core.IRServiceURL;
 	import be.irail.api.core.IRailAPISettings;
-	import be.irail.api.data.stations.IRStation;
 	import be.irail.api.data.stations.IRStationListFilter;
 	import be.irail.api.event.IRailResult;
 	import be.irail.api.event.IRailResultEvent;
 	import be.irail.api.util.ParserUtil;
-	import be.irail.api.util.StringUtils;
 
 	import flash.events.Event;
 	import flash.events.IOErrorEvent;
