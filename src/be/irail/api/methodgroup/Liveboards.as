@@ -7,12 +7,9 @@ package be.irail.api.methodgroup {
 	import be.irail.api.data.liveboard.LiveboardDeparture;
 	import be.irail.api.data.stations.IRStation;
 	import be.irail.api.data.stations.IRStationPlatform;
-	import be.irail.api.data.vehicle.IRVehicle;
 	import be.irail.api.event.IRailResult;
 	import be.irail.api.event.IRailResultEvent;
-	import be.irail.api.util.DateUtil;
 	import be.irail.api.util.ParserUtil;
-	import be.irail.api.util.StringUtils;
 
 	import flash.events.Event;
 	import flash.events.IOErrorEvent;
@@ -144,7 +141,7 @@ package be.irail.api.methodgroup {
 				for each (var departureXML:XML in data.departures.departure) {
 					var departure:LiveboardDeparture = new LiveboardDeparture();
 					departure.id = departureXML.@id;
-					departure.dateTime = DateUtil.convertISO8601ToDate(departureXML.time.@formatted);
+					departure.dateTime = ParserUtil.getDateFromUnixTimestamp(departureXML.time);
 					departure.platform = new IRStationPlatform(departureXML.platform);
 					departure.vehicle = ParserUtil.parseVehicle(departureXML.vehicle);
 					departure.delay = departureXML.@delay;
@@ -158,7 +155,7 @@ package be.irail.api.methodgroup {
 				for each (var arrivalXML:XML in data.arrivals.arrival) {
 					var arrival:LiveboardArrival = new LiveboardArrival();
 					arrival.id = arrivalXML.@id;
-					arrival.dateTime = DateUtil.convertISO8601ToDate(arrivalXML.time.@formatted);
+					arrival.dateTime = ParserUtil.getDateFromUnixTimestamp(arrivalXML.time);
 					arrival.platform = new IRStationPlatform(arrivalXML.platform);
 					arrival.vehicle = ParserUtil.parseVehicle(arrivalXML.vehicle);
 					arrival.delay = arrivalXML.@delay;

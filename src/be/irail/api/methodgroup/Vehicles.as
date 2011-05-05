@@ -8,7 +8,6 @@ package be.irail.api.methodgroup {
 	import be.irail.api.data.vehicle.VehicleStop;
 	import be.irail.api.event.IRailResult;
 	import be.irail.api.event.IRailResultEvent;
-	import be.irail.api.util.DateUtil;
 	import be.irail.api.util.ParserUtil;
 
 	import flash.events.Event;
@@ -76,7 +75,7 @@ package be.irail.api.methodgroup {
 					stop.id = stopXML.@id;
 					stop.delay = stopXML.@delay;
 					stop.station = ParserUtil.parseStationXML(stopXML.station);
-					stop.dateTime = DateUtil.convertISO8601ToDate(stopXML.time.@formatted);
+					stop.dateTime = ParserUtil.getDateFromUnixTimestamp(stopXML.time);
 					info.stops.push(stop);
 				}
 

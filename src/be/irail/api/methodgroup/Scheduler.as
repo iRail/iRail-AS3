@@ -12,7 +12,6 @@ package be.irail.api.methodgroup {
 	import be.irail.api.data.stations.IRStationPlatform;
 	import be.irail.api.event.IRailResult;
 	import be.irail.api.event.IRailResultEvent;
-	import be.irail.api.util.DateUtil;
 	import be.irail.api.util.ParserUtil;
 	import be.irail.api.util.StringUtils;
 
@@ -41,12 +40,11 @@ package be.irail.api.methodgroup {
 		 * @param includeTime (optional) If true, will include time in <code>dateTime</code> in query, else te query will only send a date
 		 * @param dateTimeIndicator (optional) Indicate what the selected date and time indicates, arrival or departure. See <code>be.irail.api.core.DateTimeIndicator</code> for values. (default: departure)
 		 * @param typesOfTransport array of values like train;bus;taxi
-		 * @param numResults (optional) Number of results to return
 		 *
 		 * @see be.irail.api.core.DateTimeIndicator
 		 * @see be.irail.api.core.LanguageCode
 		 */
-		public function getRoutes(from:IRStation, to:IRStation, dateTime:Date = null, includeTime:Boolean = true, dateTimeIndicator:String = "depart", typesOfTransport:Array = null, numResults:int = -1):void {
+		public function getRoutes(from:IRStation, to:IRStation, dateTime:Date = null, includeTime:Boolean = true, dateTimeIndicator:String = "depart", typesOfTransport:Array = null):void {
 			var serviceURL:String = IRServiceURL.SCHEDULER_URL;
 			var loader:URLLoader = new URLLoader();
 			var request:URLRequest = new URLRequest(serviceURL);
@@ -80,10 +78,6 @@ package be.irail.api.methodgroup {
 				}
 			}
 
-			if (numResults > 0) {
-				vars.results = numResults;
-			}
-
 			request.data = vars;
 
 			loader.addEventListener(Event.COMPLETE, onResponse);
@@ -109,7 +103,7 @@ package be.irail.api.methodgroup {
 					departureGate.station = ParserUtil.parseStationXML(connectionXML.departure.station);
 
 					departureGate.delay = connectionXML.departure.@delay;
-					departureGate.dateTime = DateUtil.convertISO8601ToDate(connectionXML.departure.time.@formatted);
+					departureGate.dateTime = ParserUtil.getDateFromUnixTimestamp(connectionXML.departure.time);
 					departureGate.platform = new IRStationPlatform(connectionXML.departure.platform, StringUtils.trim(connectionXML.departure.platform.@normal).toLowerCase() == "yes");
 					departureGate.vehicle = ParserUtil.parseVehicle(connectionXML.departure.vehicle);
 					connection.departure = departureGate;
@@ -122,12 +116,12 @@ package be.irail.api.methodgroup {
 						viaGate.station = ParserUtil.parseStationXML(viaXML.station);
 
 						var viaDepart:ViaDepartArrival = new ViaDepartArrival();
-						viaDepart.dateTime = DateUtil.convertISO8601ToDate(viaXML.depart.time.@formatted);
-						viaDepart.platform = new IRStationPlatform(viaXML.depart.platform);
+						viaDepart.dateTime = ParserUtil.getDateFromUnixTimestamp(viaXML.departure.time);
+						viaDepart.platform = new IRStationPlatform(viaXML.departure.platform);
 						viaGate.depart = viaDepart;
 
 						var viaArrival:ViaDepartArrival = new ViaDepartArrival();
-						viaArrival.dateTime = DateUtil.convertISO8601ToDate(viaXML.arrival.time.@formatted);
+						viaArrival.dateTime = ParserUtil.getDateFromUnixTimestamp(viaXML.arrival.time);
 						viaArrival.platform = new IRStationPlatform(viaXML.arrival.platform);
 						viaGate.arrival = viaArrival;
 
@@ -144,7 +138,7 @@ package be.irail.api.methodgroup {
 					arrivalGate.platform = new IRStationPlatform(connectionXML.arrival.platform, StringUtils.trim(connectionXML.arrival.platform.@normal).toLowerCase() == "yes");
 					arrivalGate.vehicle = ParserUtil.parseVehicle(connectionXML.arrival.vehicle);
 
-					arrivalGate.dateTime = DateUtil.convertISO8601ToDate(connectionXML.arrival.time.@formatted)
+					arrivalGate.dateTime = ParserUtil.getDateFromUnixTimestamp(connectionXML.arrival.time)
 
 					connection.arrival = arrivalGate;
 

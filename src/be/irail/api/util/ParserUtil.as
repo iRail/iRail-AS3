@@ -54,5 +54,15 @@ package be.irail.api.util {
 			return vehicle;
 		}
 
+		public static function getDateFromUnixTimestamp(unixTime:String):Date {
+			var unixTimestamp:Number = Number(unixTime);
+
+			if (isNaN(unixTimestamp)) {
+				return new Date();
+			}
+
+			return new Date(unixTimestamp * 1000);
+		}
+
 	}
 }

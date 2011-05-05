@@ -26,8 +26,6 @@ package be.irail.api {
 			_scheduler = new Scheduler();
 			_liveBoard = new Liveboards();
 			_vehicles = new Vehicles();
-
-
 		}
 
 		/**
